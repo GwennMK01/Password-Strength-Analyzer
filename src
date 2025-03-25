@@ -1,0 +1,43 @@
+import re
+import string
+import time
+
+def password_strength(password):
+    length_score = min(len(password) / 8, 1)  
+    digit_score = 1 if any(char.isdigit() for char in password) else 0
+    upper_score = 1 if any(char.isupper() for char in password) else 0
+    lower_score = 1 if any(char.islower() for char in password) else 0
+    special_score = 1 if any(char in string.punctuation for char in password) else 0
+    
+    score = (length_score + digit_score + upper_score + lower_score + special_score) / 5 * 100
+    
+    if score >= 80:
+        return "Strong 💪"
+    elif score >= 50:
+        return "Medium ⚠️"
+    else:
+        return "Weak ❌"
+
+def brute_force_time(password):
+    charset_size = 0
+    if any(char.islower() for char in password):
+        charset_size += 26
+    if any(char.isupper() for char in password):
+        charset_size += 26
+    if any(char.isdigit() for char in password):
+        charset_size += 10
+    if any(char in string.punctuation for char in password):
+        charset_size += len(string.punctuation)
+    
+    total_combinations = charset_size ** len(password)
+    brute_force_seconds = total_combinations / 1000000  
+    
+    return time.strftime("%Hh %Mm %Ss", time.gmtime(brute_force_seconds))
+
+if __name__ == "__main__":
+    password = input("Enter a password to test: ")  
+    strength = password_strength(password)
+    crack_time = brute_force_time(password)
+    
+    print(f"Password Strength: {strength}")
+    print(f"Estimated brute-force time: {crack_time}")
